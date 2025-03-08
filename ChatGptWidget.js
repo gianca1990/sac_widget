@@ -95,63 +95,61 @@
       const generateButton = this.shadowRoot.getElementById("generate-button");
       const chatContainer = this.shadowRoot.getElementById("chat-container");
 
-      generateButton.addEventListener("click", async () => {
-        const promptInput = this.shadowRoot.getElementById("prompt-input");
-        const prompt = promptInput.value;
-
-        // Add user message to chat only if it hasn't been added
-        if (!this.isLastMessageFromUser()) {
-          this.addMessageToChat(prompt, 'user');
-        }
-
-        try {
-          const response = await fetch("https://api.openai.com/v1/chat/completions", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              "Authorization": "Bearer " + apiKey,
-            },
-            body: JSON.stringify({
-              model: "gpt-3.5-turbo",
-              messages: [
-                { role: "system", content: "You are a helpful assistant." },
-                { role: "user", content: prompt },
-              ],
-              max_tokens: parseInt(max_tokens),
-              n: 1,
-              temperature: 0.5,
-            }),
-          });
-
-          if (response.status === 200) {
-            const { choices } = await response.json();
-            const generatedTextValue = choices[0].message.content;
-
-            if (generatedTextValue) {
-              // Only add the bot's response once
-              this.addMessageToChat(generatedTextValue.replace(/^\n+/, ''), 'bot');
-            } else {
-              this.addMessageToChat("No response from API", 'bot');
-            }
-          } else {
-            const error = await response.json();
-            alert("OpenAI Response: " + error.error.message);
-            // Only show error message if no response was received
-            this.addMessageToChat("An error occurred.", 'bot');
-          }
-        } catch (error) {
-          console.error(error);
-          // Add only a single error message if something went wrong
-          this.addMessageToChat("An error occurred.", 'bot');
-        }
-      });
+      // Event listener wird nur einmal hinzugefügt
+      generateButton.removeEventListener("click", this.handleGenerateButtonClick);
+      generateButton.addEventListener("click", this.handleGenerateButtonClick.bind(this, apiKey, max_tokens, chatContainer, generateButton));
     }
 
-    // Method to check if the last message is from the user
-    isLastMessageFromUser() {
-      const chatContainer = this.shadowRoot.getElementById("chat-container");
-      const lastMessage = chatContainer.lastChild;
-      return lastMessage && lastMessage.classList.contains('user-message');
+    async handleGenerateButtonClick(apiKey, max_tokens, chatContainer, generateButton) {
+      const promptInput = this.shadowRoot.getElementById("prompt-input");
+      const prompt = promptInput.value;
+
+      // Add user message to chat
+      this.addMessageToChat(prompt, 'user');
+
+      // Deaktiviere den Button während der Anfrage, um doppelte Klicks zu verhindern
+      generateButton.disabled = true;
+
+      try {
+        const response = await fetch("https://api.openai.com/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + apiKey,
+          },
+          body: JSON.stringify({
+            model: "gpt-3.5-turbo",
+            messages: [
+              { role: "system", content: "You are a helpful assistant." },
+              { role: "user", content: prompt },
+            ],
+            max_tokens: parseInt(max_tokens),
+            n: 1,
+            temperature: 0.5,
+          }),
+        });
+
+        if (response.status === 200) {
+          const { choices } = await response.json();
+          const generatedTextValue = choices[0].message.content;
+
+          if (generatedTextValue) {
+            // Add bot response to chat
+            this.addMessageToChat(generatedTextValue.replace(/^\n+/, ''), 'bot');
+          } else {
+            this.addMessageToChat("No response from API", 'bot');
+          }
+        } else {
+          const error = await response.json();
+          alert("OpenAI Response: " + error.error.message);
+        }
+      } catch (error) {
+        console.error(error);
+        this.addMessageToChat("An error occurred.", 'bot');
+      } finally {
+        // Stelle den Button wieder her
+        generateButton.disabled = false;
+      }
     }
 
     // Method to add messages to the chat container
@@ -179,4 +177,4 @@
 
   customElements.define("com-rohitchouhan-sap-chatgptwidget", Widget);
 })();
-//v1.0.19
+//v1.0.21
