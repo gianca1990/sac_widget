@@ -109,7 +109,7 @@
           const {
             choices
           } = await response.json();
-          const generatedTextValue = choices[0].text;
+          const generatedTextValue = choices[0].message.content;
           generatedText.value = generatedTextValue.replace(/^\n+/, '');
         } else {
           const error = await response.json();
