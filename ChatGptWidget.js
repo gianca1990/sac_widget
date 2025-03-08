@@ -46,7 +46,7 @@
         /* Eingabebereich */
         .input-container {
           display: flex;
-          justify-content: space-between; /* Damit Input und Button nebeneinander sind */
+          justify-content: flex-start;
           align-items: flex-start;
           padding: 10px;
           border-top: 1px solid #ccc;
