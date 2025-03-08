@@ -5,7 +5,7 @@
         :host {}
         div {
           margin: 50px auto;
-          max-width: 800px; /* Breite der Chatbox angepasst */
+          width: 800px; /* Breite der Chatbox angepasst */
           height: 700px; /* Höhe des Containers */
           display: flex;
           flex-direction: column;
@@ -51,7 +51,7 @@
           padding: 10px;
           border-top: 1px solid #ccc;
           background-color: white;
-          width: 100%;
+          width: 80%;
         }
 
         #prompt-input {
