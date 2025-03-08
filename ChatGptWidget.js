@@ -7,12 +7,14 @@
           margin: 50px auto;
           max-width: 600px;
         }
+
         .input-container {
           display: flex;
           justify-content: space-between;
           align-items: center;
           margin-bottom: 20px;
         }
+
         #prompt-input {
           padding: 10px;
           font-size: 16px;
@@ -20,6 +22,7 @@
           border-radius: 5px;
           width: 70%;
         }
+
         #generate-button {
           padding: 10px;
           font-size: 16px;
@@ -30,12 +33,34 @@
           cursor: pointer;
           width: 25%;
         }
-        #generated-text {
+
+        /* Style for the chat history */
+        .chat-container {
+          max-height: 400px;
+          overflow-y: auto;
+          margin-top: 20px;
           padding: 10px;
-          font-size: 16px;
           border: 1px solid #ccc;
           border-radius: 5px;
-          width:96%;
+        }
+
+        .user-message, .bot-message {
+          margin-bottom: 15px;
+          padding: 10px;
+          border-radius: 5px;
+          max-width: 80%;
+        }
+
+        .user-message {
+          background-color: #e0f7fa;
+          align-self: flex-end;
+          text-align: right;
+        }
+
+        .bot-message {
+          background-color: #f1f1f1;
+          align-self: flex-start;
+          text-align: left;
         }
       </style>
       <div>
@@ -47,9 +72,11 @@
           <input type="text" id="prompt-input" placeholder="Enter a prompt">
           <button id="generate-button">Generate Text</button>
         </div>
-        <textarea id="generated-text" rows="10" cols="50" readonly></textarea>
+
+        <div class="chat-container" id="chat-container"></div>
       </div>
   `;
+
   class Widget extends HTMLElement {
     constructor() {
       super();
@@ -63,16 +90,17 @@
     }
 
     async initMain() {
-      const generatedText = this.shadowRoot.getElementById("generated-text");
-      generatedText.value = "";
       const { apiKey } = this._props || "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";
       const { max_tokens } = this._props || 1024;
       const generateButton = this.shadowRoot.getElementById("generate-button");
+      const chatContainer = this.shadowRoot.getElementById("chat-container");
+
       generateButton.addEventListener("click", async () => {
         const promptInput = this.shadowRoot.getElementById("prompt-input");
-        const generatedText = this.shadowRoot.getElementById("generated-text");
-        generatedText.value = "Finding result...";
         const prompt = promptInput.value;
+
+        // Add user message to chat
+        this.addMessageToChat(prompt, 'user');
 
         try {
           const response = await fetch("https://api.openai.com/v1/chat/completions", {
@@ -98,20 +126,34 @@
             const generatedTextValue = choices[0].message.content;
 
             if (generatedTextValue) {
-              generatedText.value = generatedTextValue.replace(/^\n+/, '');
+              // Add bot response to chat
+              this.addMessageToChat(generatedTextValue.replace(/^\n+/, ''), 'bot');
             } else {
-              generatedText.value = "No response from API";
+              this.addMessageToChat("No response from API", 'bot');
             }
           } else {
             const error = await response.json();
             alert("OpenAI Response: " + error.error.message);
-            generatedText.value = "";
           }
         } catch (error) {
           console.error(error);
-          generatedText.value = "An error occurred.";
+          this.addMessageToChat("An error occurred.", 'bot');
         }
       });
+    }
+
+    // Method to add messages to the chat container
+    addMessageToChat(message, sender) {
+      const chatContainer = this.shadowRoot.getElementById("chat-container");
+
+      const messageDiv = document.createElement("div");
+      messageDiv.classList.add(sender === 'user' ? 'user-message' : 'bot-message');
+      messageDiv.textContent = message;
+
+      chatContainer.appendChild(messageDiv);
+
+      // Scroll to the bottom of the chat container
+      chatContainer.scrollTop = chatContainer.scrollHeight;
     }
 
     onCustomWidgetBeforeUpdate(changedProperties) {
@@ -122,5 +164,6 @@
       this.initMain();
     }
   }
+
   customElements.define("com-rohitchouhan-sap-chatgptwidget", Widget);
 })();
