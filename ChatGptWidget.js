@@ -94,7 +94,11 @@
           },
           body: JSON.stringify({
             "model": "gpt-3.5-turbo",
-            "prompt": prompt,
+            //"prompt": prompt,
+            "messages": [
+              { "role": "system", "content": "You are a helpful assistant." },
+              { "role": "user", "content": prompt }
+            ],
             "max_tokens": parseInt(max_tokens),
             "n": 1,
             "temperature": 0.5
