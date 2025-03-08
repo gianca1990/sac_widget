@@ -95,8 +95,10 @@
       const generateButton = this.shadowRoot.getElementById("generate-button");
       const chatContainer = this.shadowRoot.getElementById("chat-container");
 
-      // Event listener wird nur einmal hinzugefügt
+      // Entferne den Event-Listener, falls bereits hinzugefügt
       generateButton.removeEventListener("click", this.handleGenerateButtonClick);
+
+      // Füge den Event-Listener hinzu
       generateButton.addEventListener("click", this.handleGenerateButtonClick.bind(this, apiKey, max_tokens, chatContainer, generateButton));
     }
 
@@ -104,10 +106,13 @@
       const promptInput = this.shadowRoot.getElementById("prompt-input");
       const prompt = promptInput.value;
 
+      // Verhindern, dass mehrere Anfragen gleichzeitig gesendet werden
+      if (generateButton.disabled) return;
+
       // Add user message to chat
       this.addMessageToChat(prompt, 'user');
 
-      // Deaktiviere den Button während der Anfrage, um doppelte Klicks zu verhindern
+      // Deaktiviere den Button während der Anfrage
       generateButton.disabled = true;
 
       try {
@@ -177,4 +182,4 @@
 
   customElements.define("com-rohitchouhan-sap-chatgptwidget", Widget);
 })();
-//v1.0.21
+//v1.0.22
