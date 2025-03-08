@@ -99,7 +99,7 @@
         const promptInput = this.shadowRoot.getElementById("prompt-input");
         const prompt = promptInput.value;
 
-        // Only add user message if not already added (preventing duplicates)
+        // Add user message to chat only if it hasn't been added
         if (!this.isLastMessageFromUser()) {
           this.addMessageToChat(prompt, 'user');
         }
@@ -128,7 +128,7 @@
             const generatedTextValue = choices[0].message.content;
 
             if (generatedTextValue) {
-              // Add bot response to chat
+              // Only add the bot's response once
               this.addMessageToChat(generatedTextValue.replace(/^\n+/, ''), 'bot');
             } else {
               this.addMessageToChat("No response from API", 'bot');
@@ -136,10 +136,12 @@
           } else {
             const error = await response.json();
             alert("OpenAI Response: " + error.error.message);
-            this.addMessageToChat("An error occurred.", 'bot'); // Only error message, no duplicate bot response.
+            // Only show error message if no response was received
+            this.addMessageToChat("An error occurred.", 'bot');
           }
         } catch (error) {
           console.error(error);
+          // Add only a single error message if something went wrong
           this.addMessageToChat("An error occurred.", 'bot');
         }
       });
@@ -177,4 +179,4 @@
 
   customElements.define("com-rohitchouhan-sap-chatgptwidget", Widget);
 })();
-//v1.0.18
+//v1.0.19
