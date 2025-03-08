@@ -99,8 +99,10 @@
         const promptInput = this.shadowRoot.getElementById("prompt-input");
         const prompt = promptInput.value;
 
-        // Add user message to chat
-        this.addMessageToChat(prompt, 'user');
+        // Only add user message if not already added (preventing duplicates)
+        if (!this.isLastMessageFromUser()) {
+          this.addMessageToChat(prompt, 'user');
+        }
 
         try {
           const response = await fetch("https://api.openai.com/v1/chat/completions", {
@@ -142,6 +144,13 @@
       });
     }
 
+    // Method to check if the last message is from the user
+    isLastMessageFromUser() {
+      const chatContainer = this.shadowRoot.getElementById("chat-container");
+      const lastMessage = chatContainer.lastChild;
+      return lastMessage && lastMessage.classList.contains('user-message');
+    }
+
     // Method to add messages to the chat container
     addMessageToChat(message, sender) {
       const chatContainer = this.shadowRoot.getElementById("chat-container");
@@ -167,3 +176,4 @@
 
   customElements.define("com-rohitchouhan-sap-chatgptwidget", Widget);
 })();
+//v1.0.17
