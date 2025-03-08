@@ -2,11 +2,16 @@
   let template = document.createElement("template");
   template.innerHTML = `
       <style>
-        :host {}
+        :host {
+          display: block;
+          width: 100%; /* Widget soll die volle Breite des Containers einnehmen */
+          height: 100%; /* Widget soll die volle Höhe des Containers einnehmen */
+        }
+        
         div {
-          margin: 50px auto;
-          width: 800px; /* Breite der Chatbox angepasst */
-          height: 700px; /* Höhe des Containers */
+          margin: 20px auto;
+          width: 100%;  /* Setze die Breite auf 100%, um den Container zu füllen */
+          height: 100%; /* Setze die Höhe auf 100%, um den Container zu füllen */
           display: flex;
           flex-direction: column;
           justify-content: space-between;
@@ -21,6 +26,8 @@
           border: 1px solid #ccc;
           border-radius: 10px;
           background-color: #fafafa;
+          height: calc(100% - 120px); /* Berechnet die Höhe, damit der Eingabebereich auch Platz hat */
+          max-height: 80%; /* Maximalhöhe von 80% des Widgets */
         }
 
         .user-message, .bot-message {
@@ -46,12 +53,13 @@
         /* Eingabebereich */
         .input-container {
           display: flex;
-          justify-content: flex-start;
+          justify-content: space-between; /* Damit Input und Button nebeneinander sind */
           align-items: flex-start;
           padding: 10px;
           border-top: 1px solid #ccc;
           background-color: white;
-          width: 80%;
+          width: 100%;
+          max-width: 100%;
         }
 
         #prompt-input {
@@ -63,6 +71,7 @@
           margin-right: 10px;
           resize: vertical; /* Ermöglicht das Vergrößern des Textfeldes */
           min-height: 40px;
+          max-width: 100%;
         }
 
         #generate-button {
