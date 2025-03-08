@@ -5,52 +5,30 @@
         :host {}
         div {
           margin: 50px auto;
-          max-width: 800px;
-        }
-
-        .input-container {
+          max-width: 800px; /* Breite der Chatbox angepasst */
+          height: 700px; /* Höhe des Containers */
           display: flex;
+          flex-direction: column;
           justify-content: space-between;
-          align-items: center;
-          margin-top: 10px;
-          width: 100%;
         }
 
-        #prompt-input {
-          padding: 10px;
-          font-size: 16px;
-          border: 1px solid #ccc;
-          border-radius: 5px;
-          flex-grow: 1;
-          min-width: 0;
-        }
-
-        #generate-button {
-          padding: 10px;
-          font-size: 16px;
-          background-color: #3cb6a9;
-          color: #fff;
-          border: none;
-          border-radius: 5px;
-          cursor: pointer;
-          margin-left: 10px;
-        }
-
-        /* Style for the chat history */
+        /* Style für den Chat-Verlauf */
         .chat-container {
-          max-height: 500px;
+          flex-grow: 1; /* Damit der Chat-Verlauf den verfügbaren Platz einnimmt */
           overflow-y: auto;
-          margin-top: 20px;
-          padding: 10px;
+          margin-bottom: 20px;
+          padding: 20px;
           border: 1px solid #ccc;
-          border-radius: 5px;
+          border-radius: 10px;
+          background-color: #fafafa;
         }
 
         .user-message, .bot-message {
           margin-bottom: 15px;
-          padding: 10px;
-          border-radius: 5px;
+          padding: 12px;
+          border-radius: 8px;
           max-width: 80%;
+          word-wrap: break-word;
         }
 
         .user-message {
@@ -64,13 +42,46 @@
           align-self: flex-start;
           text-align: left;
         }
+
+        /* Eingabebereich */
+        .input-container {
+          display: flex;
+          justify-content: space-between; /* Damit Input und Button nebeneinander sind */
+          align-items: flex-start;
+          padding: 10px;
+          border-top: 1px solid #ccc;
+          background-color: white;
+          width: 100%;
+        }
+
+        #prompt-input {
+          padding: 10px;
+          font-size: 16px;
+          border: 1px solid #ccc;
+          border-radius: 20px;
+          width: 80%;
+          margin-right: 10px;
+          resize: vertical; /* Ermöglicht das Vergrößern des Textfeldes */
+          min-height: 40px;
+        }
+
+        #generate-button {
+          padding: 10px;
+          font-size: 16px;
+          background-color: #3cb6a9;
+          color: #fff;
+          border: none;
+          border-radius: 20px;
+          cursor: pointer;
+          width: 18%;
+        }
       </style>
       <div>
         <div class="chat-container" id="chat-container"></div>
 
         <div class="input-container">
-          <input type="text" id="prompt-input" placeholder="Enter a prompt">
-          <button id="generate-button">Generate Text</button>
+          <textarea id="prompt-input" placeholder="Nachricht eingeben..." rows="1"></textarea>
+          <button id="generate-button">Senden</button>
         </div>
       </div>
   `;
