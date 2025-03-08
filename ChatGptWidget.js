@@ -5,7 +5,7 @@
         :host {}
         div {
           margin: 50px auto;
-          max-width: 600px; /* Breite der Chatbox */
+          width: 800px; /* Breite der Chatbox */
           height: 700px; /* Höhe des Containers */
           display: flex;
           flex-direction: column;
