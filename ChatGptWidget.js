@@ -5,50 +5,30 @@
         :host {}
         div {
           margin: 50px auto;
-          max-width: 600px;
-        }
-
-        .input-container {
+          max-width: 375px; /* Breite, die einem Handy-Bildschirm entspricht */
+          height: 600px; /* Höhe des Containers */
           display: flex;
+          flex-direction: column;
           justify-content: space-between;
-          align-items: center;
-          margin-bottom: 20px;
         }
 
-        #prompt-input {
-          padding: 10px;
-          font-size: 16px;
-          border: 1px solid #ccc;
-          border-radius: 5px;
-          width: 70%;
-        }
-
-        #generate-button {
-          padding: 10px;
-          font-size: 16px;
-          background-color: #3cb6a9;
-          color: #fff;
-          border: none;
-          border-radius: 5px;
-          cursor: pointer;
-          width: 25%;
-        }
-
-        /* Style for the chat history */
+        /* Style für den Chat-Verlauf */
         .chat-container {
-          max-height: 400px;
+          flex-grow: 1; /* Damit der Chat-Verlauf den verfügbaren Platz einnimmt */
           overflow-y: auto;
-          margin-top: 20px;
-          padding: 10px;
+          margin-bottom: 20px;
+          padding: 20px;
           border: 1px solid #ccc;
-          border-radius: 5px;
+          border-radius: 10px;
+          background-color: #fafafa;
         }
 
         .user-message, .bot-message {
           margin-bottom: 15px;
-          padding: 10px;
-          border-radius: 5px;
+          padding: 12px;
+          border-radius: 8px;
           max-width: 80%;
+          word-wrap: break-word;
         }
 
         .user-message {
@@ -62,18 +42,45 @@
           align-self: flex-start;
           text-align: left;
         }
+
+        /* Eingabebereich */
+        .input-container {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 10px;
+          border-top: 1px solid #ccc;
+          background-color: white;
+        }
+
+        #prompt-input {
+          padding: 10px;
+          font-size: 16px;
+          border: 1px solid #ccc;
+          border-radius: 20px;
+          width: 80%;
+          margin-right: 10px;
+        }
+
+        #generate-button {
+          padding: 10px;
+          font-size: 16px;
+          background-color: #3cb6a9;
+          color: #fff;
+          border: none;
+          border-radius: 20px;
+          cursor: pointer;
+          width: 18%;
+        }
       </style>
       <div>
-        <center>
-          <img src="https://1000logos.net/wp-content/uploads/2023/02/ChatGPT-Emblem.png" width="200"/>
-          <h1>ChatGPT</h1>
-        </center>
-        <div class="input-container">
-          <input type="text" id="prompt-input" placeholder="Enter a prompt">
-          <button id="generate-button">Generate Text</button>
-        </div>
-
+        <!-- Keine Logo oder Titel -->
         <div class="chat-container" id="chat-container"></div>
+
+        <div class="input-container">
+          <input type="text" id="prompt-input" placeholder="Nachricht eingeben...">
+          <button id="generate-button">Senden</button>
+        </div>
       </div>
   `;
 
@@ -182,4 +189,4 @@
 
   customElements.define("com-rohitchouhan-sap-chatgptwidget", Widget);
 })();
-//v1.0.22
+//v1.0.23
