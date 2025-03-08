@@ -136,6 +136,7 @@
           } else {
             const error = await response.json();
             alert("OpenAI Response: " + error.error.message);
+            this.addMessageToChat("An error occurred.", 'bot'); // Only error message, no duplicate bot response.
           }
         } catch (error) {
           console.error(error);
@@ -176,4 +177,4 @@
 
   customElements.define("com-rohitchouhan-sap-chatgptwidget", Widget);
 })();
-//v1.0.17
+//v1.0.18
