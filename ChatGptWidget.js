@@ -5,8 +5,8 @@
         :host {}
         div {
           margin: 50px auto;
-          max-width: 375px; /* Breite, die einem Handy-Bildschirm entspricht */
-          height: 600px; /* Höhe des Containers */
+          max-width: 600px; /* Breite der Chatbox */
+          height: 700px; /* Höhe des Containers */
           display: flex;
           flex-direction: column;
           justify-content: space-between;
@@ -46,11 +46,12 @@
         /* Eingabebereich */
         .input-container {
           display: flex;
-          justify-content: space-between;
-          align-items: center;
+          justify-content: flex-start;
+          align-items: flex-start;
           padding: 10px;
           border-top: 1px solid #ccc;
           background-color: white;
+          width: 100%;
         }
 
         #prompt-input {
@@ -60,6 +61,8 @@
           border-radius: 20px;
           width: 80%;
           margin-right: 10px;
+          resize: vertical; /* Ermöglicht das Vergrößern des Textfeldes */
+          min-height: 40px;
         }
 
         #generate-button {
@@ -74,11 +77,10 @@
         }
       </style>
       <div>
-        <!-- Keine Logo oder Titel -->
         <div class="chat-container" id="chat-container"></div>
 
         <div class="input-container">
-          <input type="text" id="prompt-input" placeholder="Nachricht eingeben...">
+          <textarea id="prompt-input" placeholder="Nachricht eingeben..." rows="1"></textarea>
           <button id="generate-button">Senden</button>
         </div>
       </div>
@@ -189,4 +191,4 @@
 
   customElements.define("com-rohitchouhan-sap-chatgptwidget", Widget);
 })();
-//v1.0.23
+//v1.0.24
