@@ -134,21 +134,25 @@
       generateButton.disabled = true;
 
       try {
-        const response = await fetch("https://api.openai.com/v1/chat/completions", {
+        //const response = await fetch("https://api.openai.com/v1/chat/completions", {
+        const response = await fetch(apiKey, {
           method: "POST",
           headers: {
-            "Content-Type": "application/json",
-            "Authorization": "Bearer " + apiKey,
+            "Content-Type": "application/json"
+            //"Authorization": "Bearer " + apiKey,
           },
           body: JSON.stringify({
-            model: "gpt-3.5-turbo",
+            //model: "gpt-3.5-turbo",
             messages: [
-              { role: "system", content: "You are a helpful assistant." },
-              { role: "user", content: prompt },
-            ],
-            max_tokens: parseInt(max_tokens),
-            n: 1,
-            temperature: 0.5,
+              { content: prompt }
+            ]
+            //messages: [
+            //  { role: "system", content: "You are a helpful assistant." },
+            //  { role: "user", content: prompt },
+            //],
+            //max_tokens: parseInt(max_tokens),
+            //n: 1,
+            //temperature: 0.5,
           }),
         });
 
