@@ -4,32 +4,28 @@
       <style>
         :host {
           display: block;
-          width: 100%; /* Widget soll die volle Breite des Containers einnehmen */
-          height: 100%; /* Widget soll die volle Höhe des Containers einnehmen */
+          width: 100%;
+          height: 100%;
         }
-        
         div {
           margin: 20px auto;
-          width: 100%;  /* Setze die Breite auf 100%, um den Container zu füllen */
-          height: 100%; /* Setze die Höhe auf 100%, um den Container zu füllen */
+          width: 100%;
+          height: 100%;
           display: flex;
           flex-direction: column;
           justify-content: space-between;
         }
-
-        /* Style für den Chat-Verlauf */
         .chat-container {
-          flex-grow: 1; /* Damit der Chat-Verlauf den verfügbaren Platz einnimmt */
+          flex-grow: 1;
           overflow-y: auto;
           margin-bottom: 20px;
           padding: 20px;
           border: 1px solid #ccc;
           border-radius: 10px;
           background-color: #fafafa;
-          height: calc(100% - 120px); /* Berechnet die Höhe, damit der Eingabebereich auch Platz hat */
-          max-height: 80%; /* Maximalhöhe von 80% des Widgets */
+          height: calc(100% - 120px);
+          max-height: 80%;
         }
-
         .user-message, .bot-message {
           margin-bottom: 15px;
           padding: 12px;
@@ -37,23 +33,19 @@
           max-width: 80%;
           word-wrap: break-word;
         }
-
         .user-message {
           background-color: #e0f7fa;
           align-self: flex-end;
           text-align: right;
         }
-
         .bot-message {
           background-color: #f1f1f1;
           align-self: flex-start;
           text-align: left;
         }
-
-        /* Eingabebereich */
         .input-container {
           display: flex;
-          justify-content: space-between; /* Damit Input und Button nebeneinander sind */
+          justify-content: space-between;
           align-items: flex-start;
           padding: 10px;
           border-top: 1px solid #ccc;
@@ -61,7 +53,6 @@
           width: 100%;
           max-width: 100%;
         }
-
         #prompt-input {
           padding: 10px;
           font-size: 16px;
@@ -69,11 +60,10 @@
           border-radius: 20px;
           width: 80%;
           margin-right: 10px;
-          resize: vertical; /* Ermöglicht das Vergrößern des Textfeldes */
+          resize: vertical;
           min-height: 40px;
           max-width: 100%;
         }
-
         #generate-button {
           padding: 10px;
           font-size: 16px;
@@ -87,7 +77,6 @@
       </style>
       <div>
         <div class="chat-container" id="chat-container"></div>
-
         <div class="input-container">
           <textarea id="prompt-input" placeholder="Nachricht eingeben..." rows="1"></textarea>
           <button id="generate-button">Senden</button>
@@ -108,99 +97,54 @@
     }
 
     async initMain() {
-      const { apiKey } = this._props || "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";
-      const { max_tokens } = this._props || 1024;
+      const apiKey = "https://fastapi-app-xyz.a.run.app/";  // ✅ Variable heißt wieder "apiKey"
       const generateButton = this.shadowRoot.getElementById("generate-button");
       const chatContainer = this.shadowRoot.getElementById("chat-container");
 
-      // Entferne den Event-Listener, falls bereits hinzugefügt
       generateButton.removeEventListener("click", this.handleGenerateButtonClick);
-
-      // Füge den Event-Listener hinzu
-      generateButton.addEventListener("click", this.handleGenerateButtonClick.bind(this, apiKey, max_tokens, chatContainer, generateButton));
+      generateButton.addEventListener("click", this.handleGenerateButtonClick.bind(this, apiKey, chatContainer, generateButton));
     }
 
-    async handleGenerateButtonClick(apiKey, max_tokens, chatContainer, generateButton) {
+    async handleGenerateButtonClick(apiKey, chatContainer, generateButton) {
       const promptInput = this.shadowRoot.getElementById("prompt-input");
       const prompt = promptInput.value;
 
-      // Verhindern, dass mehrere Anfragen gleichzeitig gesendet werden
       if (generateButton.disabled) return;
 
-      // Add user message to chat
       this.addMessageToChat(prompt, 'user');
-
-      // Deaktiviere den Button während der Anfrage
       generateButton.disabled = true;
 
       try {
-        //const response = await fetch("https://api.openai.com/v1/chat/completions", {
-        const response = await fetch(apiKey, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json"
-            //"Authorization": "Bearer " + apiKey,
-          },
-          body: JSON.stringify({
-            //model: "gpt-3.5-turbo",
-            messages: [
-              { content: prompt }
-            ]
-            //messages: [
-            //  { role: "system", content: "You are a helpful assistant." },
-            //  { role: "user", content: prompt },
-            //],
-            //max_tokens: parseInt(max_tokens),
-            //n: 1,
-            //temperature: 0.5,
-          }),
-        });
+        // ✅ Korrekte API-Anfrage mit GET und Query-Parametern
+        const response = await fetch(`${apiKey}?prompt=${encodeURIComponent(prompt)}`, { method: "GET" });
 
         if (response.status === 200) {
-          //const { choices } = await response.json();
-          //const generatedTextValue = choices[0].message.content;
           const data = await response.json();
           const generatedTextValue = data.message;
 
           if (generatedTextValue) {
-            // Add bot response to chat
-            this.addMessageToChat(generatedTextValue.replace(/^\n+/, ''), 'bot');
+            this.addMessageToChat(generatedTextValue, 'bot');
           } else {
             this.addMessageToChat("No response from API", 'bot');
           }
         } else {
-          const error = await response.json();
-          alert("OpenAI Response: " + error.error.message);
+          alert("API Response Error: " + response.status);
         }
       } catch (error) {
         console.error(error);
         this.addMessageToChat("An error occurred.", 'bot');
       } finally {
-        // Stelle den Button wieder her
         generateButton.disabled = false;
       }
     }
 
-    // Method to add messages to the chat container
     addMessageToChat(message, sender) {
       const chatContainer = this.shadowRoot.getElementById("chat-container");
-
       const messageDiv = document.createElement("div");
       messageDiv.classList.add(sender === 'user' ? 'user-message' : 'bot-message');
       messageDiv.textContent = message;
-
       chatContainer.appendChild(messageDiv);
-
-      // Scroll to the bottom of the chat container
       chatContainer.scrollTop = chatContainer.scrollHeight;
-    }
-
-    onCustomWidgetBeforeUpdate(changedProperties) {
-      this._props = { ...this._props, ...changedProperties };
-    }
-
-    onCustomWidgetAfterUpdate(changedProperties) {
-      this.initMain();
     }
   }
 
