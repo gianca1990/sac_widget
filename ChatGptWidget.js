@@ -116,7 +116,7 @@
 
       try {
         // ✅ Korrekte API-Anfrage mit GET und Query-Parametern
-        const response = await fetch(apiKey, { method: "GET" });
+        const response = await fetch(apiKey, { method: "GET", mode: "no-cors" });
 
         if (response.status === 200) {
           const data = await response.json();
