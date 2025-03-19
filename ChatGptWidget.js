@@ -136,7 +136,7 @@
       try {
         //const response = await fetch("https://api.openai.com/v1/chat/completions", {
         const response = await fetch(apiKey, {
-          method: "POST",
+          method: "GET",
           headers: {
             "Content-Type": "application/json"
             //"Authorization": "Bearer " + apiKey,
@@ -157,8 +157,10 @@
         });
 
         if (response.status === 200) {
-          const { choices } = await response.json();
-          const generatedTextValue = choices[0].message.content;
+          //const { choices } = await response.json();
+          //const generatedTextValue = choices[0].message.content;
+          const data = await response.json();
+          const generatedTextValue = data.message;
 
           if (generatedTextValue) {
             // Add bot response to chat
