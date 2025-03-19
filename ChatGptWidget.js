@@ -97,7 +97,7 @@
     }
 
     async initMain() {
-      const apiKey = "https://fastapi-app-xyz.a.run.app/";  // ✅ Variable heißt wieder "apiKey"
+      const apiKey = "https://fastapi-app-886832348626.europe-west1.run.app/";  // ✅ Variable heißt wieder "apiKey"
       const generateButton = this.shadowRoot.getElementById("generate-button");
       const chatContainer = this.shadowRoot.getElementById("chat-container");
 
@@ -116,7 +116,7 @@
 
       try {
         // ✅ Korrekte API-Anfrage mit GET und Query-Parametern
-        const response = await fetch(`${apiKey}?prompt=${encodeURIComponent(prompt)}`, { method: "GET" });
+        const response = await fetch(apiKey, { method: "GET" });
 
         if (response.status === 200) {
           const data = await response.json();
